@@ -12,8 +12,23 @@ bool Application::OnUserCreate() {
 }
 
 bool Application::OnUserUpdate(float fElapsedTime) {
+	if (!HandleInput()) {
+		return false;
+	}
+
+	DrawScene();
 
 	return true;
+}
+
+bool Application::HandleInput() {
+	if (GetKey(olc::Key::ESCAPE).bReleased) return false; // Exit on ESC
+
+	return true;
+}
+
+void Application::DrawScene() {
+	Clear(style_.bgColor);
 }
 
 } // namespace Editor
