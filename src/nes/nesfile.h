@@ -4,8 +4,6 @@
 
 namespace nes {
 
-constexpr size_t kChrBankSize = 0x2000;
-
 class File {
 public:
 	static std::unique_ptr<File> LoadFromFile(const std::string& filePath);

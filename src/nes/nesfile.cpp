@@ -1,5 +1,7 @@
 #include "nesfile.h"
 
+#include "nes/constants.h"
+
 #include "tfm/tinyformat.h"
 
 #include <array>
@@ -8,7 +10,6 @@
 namespace {
 constexpr size_t kHeaderSize = 16;
 constexpr std::array<uint8_t, 4> kMagicNumber{'N', 'E', 'S', 0x1A};
-constexpr size_t kPrgBankSize = 0x4000;
 } // namespace
 
 namespace nes {
