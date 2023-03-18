@@ -7,14 +7,15 @@
 namespace Editor {
 
 bool Model::SetChrData(std::span<uint8_t> data) {
-    if (data.size() != nes::kChrBankSize) {
+	if (data.size() != nes::kChrBankSize) {
 		tfm::printf("ERROR: invalid chr bank size: %s (correct %s)\n",
-				data.size(), nes::kChrBankSize);
+			data.size(), nes::kChrBankSize);
 		return false;
-    }
+	}
 
-    data_ = std::move(data);
-    return true;
+	data_ = std::move(data);
+	UpdateSprite();
+	return true;
 }
 
 const uint8_t Model::GetPaletteColorId(uint8_t index) const {
@@ -27,6 +28,15 @@ void Model::SetPaletteColorId(uint8_t index, uint8_t id) {
 	assert(0 <= index && index < palette_.size());
 
 	palette_[index] = id;
+	UpdateSprite();
+}
+
+const olc::Sprite& Model::GetSpriteAtlas() const {
+	return spriteAtlas_;
+}
+
+void Model::UpdateSprite() {
+	// TODO
 }
 
 } // namespace Editor
