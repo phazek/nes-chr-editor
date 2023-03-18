@@ -13,4 +13,4 @@ file(GLOB editor_srcs src/editor/*.cpp)
 
 add_executable (nes-chr-editor ${srcs} ${editor_srcs})
 target_link_libraries(nes-chr-editor ${PNG_LIBRARIES} ${GLUT_LIBRARIES} ${OPENGL_LIBRARIES} )
-target_include_directories(nes-chr-editor PRIVATE ${CMAKE_CURRENT_SOURCE_DIR}/include ${CMAKE_CURRENT_SOURCE_DIR}/src/nes ${PNG_INCLUDE_DIRS} ${OPENGL_INCLUDE_DIRS} ${GLUT_INCLUDE_DIRS})
+target_include_directories(nes-chr-editor PRIVATE ${CMAKE_CURRENT_SOURCE_DIR}/include ${CMAKE_CURRENT_SOURCE_DIR}/src ${PNG_INCLUDE_DIRS} ${OPENGL_INCLUDE_DIRS} ${GLUT_INCLUDE_DIRS})
