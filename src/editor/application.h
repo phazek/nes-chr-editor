@@ -17,6 +17,7 @@ public:
 private:
 	bool HandleInput();
 	void DrawScene();
+	void BuildUI();
 
 	Style style_;
 	olc::QuickGUI::Manager guiManager_;

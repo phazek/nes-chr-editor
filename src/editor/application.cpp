@@ -4,6 +4,8 @@ namespace Editor {
 
 Application::Application() {
 	sAppName = "NES CHR editor";
+
+	BuildUI();
 }
 
 bool Application::OnUserCreate() {
@@ -45,6 +47,9 @@ void Application::DrawScene() {
 		}
 	}
 
+}
+
+void Application::BuildUI() {
 }
 
 } // namespace Editor
