@@ -29,6 +29,11 @@ bool Application::HandleInput() {
 
 void Application::DrawScene() {
 	Clear(style_.bgColor);
+	for (auto& control : controls_) {
+		control->Update(this);
+		control->Draw(this);
+	}
+
 }
 
 } // namespace Editor
