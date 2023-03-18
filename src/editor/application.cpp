@@ -7,6 +7,12 @@ Application::Application() {
 }
 
 bool Application::OnUserCreate() {
+	guiManager_.colText = style_.textColor;
+	guiManager_.colNormal = style_.bgColor;
+	guiManager_.colHover = style_.bgColor;
+	guiManager_.colClick = style_.highlightColor;
+	guiManager_.colDisable = style_.disabledColor;
+	guiManager_.colBorder = style_.borderColor;
 
 	return true;
 }
