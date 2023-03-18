@@ -12,6 +12,8 @@ public:
 	void Update();
 	void Draw();
 
+	void AddLabel(const std::string& text, const olc::vf2d& pos, const olc::vf2d& size);
+
 private:
 	using UpdateHandler_t = std::function<void()>;
 

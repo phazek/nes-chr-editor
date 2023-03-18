@@ -21,4 +21,8 @@ void Manager::Draw() {
 	guiManager_.Draw(&engine_);
 }
 
+void Manager::AddLabel(const std::string& text, const olc::vf2d& pos, const olc::vf2d& size) {
+	new olc::QuickGUI::Label(guiManager_, text, pos, size);
+}
+
 } // namespace Editor::UI
