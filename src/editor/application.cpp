@@ -38,6 +38,11 @@ void Application::DrawScene() {
 	for (auto& control : controls_) {
 		control->Update(this);
 		control->Draw(this);
+
+		auto it = controlHandlers_.find(control.get());
+		if (it != controlHandlers_.end()) {
+			it->second();
+		}
 	}
 
 }
