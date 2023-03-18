@@ -1,20 +1,20 @@
 #include "application.h"
+#include "tfm/tinyformat.h"
+
+namespace {
+const olc::vf2d kPaletteButtonSize = {30.f, 30.f};
+} // namespace
 
 namespace Editor {
 
-Application::Application() {
+Application::Application()
+: uiManager_(*this, Style{}) {
 	sAppName = "NES CHR editor";
 
 	BuildUI();
 }
 
 bool Application::OnUserCreate() {
-	guiManager_.colText = style_.textColor;
-	guiManager_.colNormal = style_.bgColor;
-	guiManager_.colHover = style_.bgColor;
-	guiManager_.colClick = style_.highlightColor;
-	guiManager_.colDisable = style_.disabledColor;
-	guiManager_.colBorder = style_.borderColor;
 
 	return true;
 }
@@ -37,19 +37,14 @@ bool Application::HandleInput() {
 
 void Application::DrawScene() {
 	Clear(style_.bgColor);
-	for (auto& control : controls_) {
-		control->Update(this);
-		control->Draw(this);
-
-		auto it = controlHandlers_.find(control.get());
-		if (it != controlHandlers_.end()) {
-			it->second();
-		}
-	}
+	uiManager_.Update();
+	uiManager_.Draw();
 
 }
 
 void Application::BuildUI() {
+	uiManager_.AddLabel("Palette", {}, {50, 20});
+
 }
 
 } // namespace Editor
