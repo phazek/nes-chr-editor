@@ -31,7 +31,7 @@ void Model::SetPaletteColorId(uint8_t index, uint8_t id) {
 	UpdateSprite();
 }
 
-const olc::Sprite& Model::GetSpriteAtlas() const {
+olc::Sprite& Model::GetSpriteAtlas() {
 	return spriteAtlas_;
 }
 
