@@ -1,5 +1,6 @@
 #include "uimanager.h"
-#include "olc/olcPGEX_QuickGUI.h"
+
+#include "uielements.h"
 
 namespace Editor::UI {
 
@@ -23,6 +24,12 @@ void Manager::Draw() {
 
 void Manager::AddLabel(const std::string& text, const olc::vf2d& pos, const olc::vf2d& size) {
 	new olc::QuickGUI::Label(guiManager_, text, pos, size);
+}
+
+void Manager::AddColorButton(const olc::Pixel& color, const std::string& text, const olc::vf2d& pos,
+	const olc::vf2d& size, UpdateHandler_t handler) {
+	auto* button = new ColorButton(guiManager_, color, text, pos, size);
+	updateHandlers_[button] = handler;
 }
 
 } // namespace Editor::UI

@@ -8,15 +8,17 @@ namespace Editor::UI {
 
 class Manager {
 public:
+	using UpdateHandler_t = std::function<void(olc::QuickGUI::BaseControl*)>;
+
 	Manager(olc::PixelGameEngine& engine, const Style& style);
 	void Update();
 	void Draw();
 
 	void AddLabel(const std::string& text, const olc::vf2d& pos, const olc::vf2d& size);
+	void AddColorButton(const olc::Pixel& color, const std::string& text, const olc::vf2d& pos,
+		const olc::vf2d& size, UpdateHandler_t handler);
 
 private:
-	using UpdateHandler_t = std::function<void()>;
-
 	olc::PixelGameEngine& engine_;
 	olc::QuickGUI::Manager guiManager_;
 	PaletteSpriteCache spriteCache_;
