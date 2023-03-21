@@ -14,7 +14,7 @@ public:
 	olc::Sprite& GetSpriteAtlas();
 private:
 	std::span<uint8_t> data_;
-	std::array<uint8_t, 4> palette_;
+	std::array<uint8_t, 4> palette_{0, 3, 6, 9};
 	olc::Sprite spriteAtlas_{128, 128};
 
 	void UpdateSprite();
