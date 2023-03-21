@@ -1,8 +1,15 @@
 #include "application.h"
+#include "nes/palette.h"
 #include "tfm/tinyformat.h"
 
 namespace {
 const olc::vf2d kPaletteButtonSize = {30.f, 30.f};
+
+olc::Pixel IdToColor(uint8_t id) {
+	assert(id < nes::kColorPalette.size());
+	return nes::kColorPalette[id];
+}
+
 } // namespace
 
 namespace Editor {
@@ -40,10 +47,18 @@ void Application::DrawScene() {
 	uiManager_.Update();
 	uiManager_.Draw();
 
+	DrawLine({140, 0}, {140, ScreenHeight()}, style_.borderColor);
+
+	DrawSprite(150, 10, &(editorModel_.GetSpriteAtlas()), 2);
+
 }
 
 void Application::BuildUI() {
-	uiManager_.AddLabel("Palette", {}, {50, 20});
+	uiManager_.AddLabel("Palette", {}, {135, 20});
+	uiManager_.AddColorButton(IdToColor(editorModel_.GetPaletteColorId(0)), "0", {0, 20}, {30, 30}, {});
+	uiManager_.AddColorButton(IdToColor(editorModel_.GetPaletteColorId(1)), "1", {35, 20}, {30, 30}, {});
+	uiManager_.AddColorButton(IdToColor(editorModel_.GetPaletteColorId(2)), "2", {70, 20}, {30, 30}, {});
+	uiManager_.AddColorButton(IdToColor(editorModel_.GetPaletteColorId(3)), "3", {105, 20}, {30, 30}, {});
 
 }
 
