@@ -24,12 +24,15 @@ private:
 	std::vector<UI::Manager::ControlHandle> paletteButtons_;
 	UI::Manager::ControlHandle colorSelectorHandle_;
 	int currentlyEditedPaletteEntry_ = -1;
+	int selectedSpriteIndex_ = 5;
+
 
 	bool HandleInput();
 	void DrawScene();
 
 	void BuildUI();
 
+	void DrawChrSprites(olc::vf2d pos, const std::vector<olc::Sprite*>& sprites);
 	void LoadNesFile(const std::string& path);
 };
 
