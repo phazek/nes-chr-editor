@@ -62,4 +62,9 @@ void Application::BuildUI() {
 
 }
 
+void Application::LoadNesFile(const std::string& path) {
+	nesFile_ = nes::File::LoadFromFile(path);
+	editorModel_.SetChrData(nesFile_->GetChrBank(0));
+}
+
 } // namespace Editor

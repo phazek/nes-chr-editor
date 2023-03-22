@@ -1,6 +1,7 @@
 #include "olc/olcPixelGameEngine.h"
 #include "olc/olcPGEX_QuickGUI.h"
 #include "ui/uimanager.h"
+#include "nes/nesfile.h"
 
 #include "model.h"
 
@@ -19,12 +20,14 @@ private:
 	Model editorModel_;
 	Style style_;
 	UI::Manager uiManager_;
+	std::unique_ptr<nes::File> nesFile_;
 
 	bool HandleInput();
 	void DrawScene();
 
 	void BuildUI();
 
+	void LoadNesFile(const std::string& path);
 };
 
 } // namespace Editor
