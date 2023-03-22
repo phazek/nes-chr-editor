@@ -28,6 +28,9 @@ public:
 	ControlHandle AddButtonStrip(
 	    uint8_t buttonCount, const olc::vf2d& pos, const olc::vf2d& size,
 	    std::function<void(int)> buttonHandler);
+	ControlHandle AddColorSelector(
+	    const olc::vf2d& pos, const olc::vf2d& size,
+	    std::function<void(int)> buttonHandler);
 
 private:
 	olc::PixelGameEngine& engine_;

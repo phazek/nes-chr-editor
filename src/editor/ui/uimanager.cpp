@@ -1,6 +1,8 @@
 #include "uimanager.h"
 
 #include "uielements.h"
+#include "nes/palette.h"
+#include "tfm/tinyformat.h"
 
 namespace Editor::UI {
 
@@ -69,6 +71,28 @@ Manager::ControlHandle Manager::AddButtonStrip(
 	    updateHandlers_[button] = [buttonHandler, i](olc::QuickGUI::BaseControl*) {
 			buttonHandler(i);
 	    };
+
+		ret.controls.push_back(button);
+	}
+
+	return ret;
+}
+
+Manager::ControlHandle Manager::AddColorSelector(const olc::vf2d& pos, const olc::vf2d& size, std::function<void(int)> buttonHandler) {
+	Manager::ControlHandle ret;
+
+	const auto textSize = engine_.GetTextSize("XX");
+	auto buttonWidth = std::min(static_cast<int>(size.x) / 4, textSize.x);
+	olc::vf2d buttonSize(buttonWidth, buttonWidth);
+
+	for (int i = 0; i < nes::kColorPalette.size(); ++i) {
+		olc::vf2d btnPos{pos.x + (i % 6) * (buttonWidth + 5), pos.y + (i / 6) * (buttonWidth + 5)};
+		auto* button = new ColorButton(
+		    guiManager_, nes::kColorPalette[i], tfm::format("%02X", i), btnPos, buttonSize);
+
+		updateHandlers_[button] = [buttonHandler, i](olc::QuickGUI::BaseControl*) {
+			buttonHandler(i);
+		};
 
 		ret.controls.push_back(button);
 	}
