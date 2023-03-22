@@ -21,6 +21,9 @@ private:
 	Style style_;
 	UI::Manager uiManager_;
 	std::unique_ptr<nes::File> nesFile_;
+	std::vector<UI::Manager::ControlHandle> paletteButtons_;
+	UI::Manager::ControlHandle colorSelectorHandle_;
+	int currentlyEditedPaletteEntry_ = -1;
 
 	bool HandleInput();
 	void DrawScene();

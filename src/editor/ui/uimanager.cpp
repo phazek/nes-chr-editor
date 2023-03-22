@@ -27,12 +27,10 @@ void Manager::Update() {
 }
 
 void Manager::Draw() {
-	guiManager_.Draw(&engine_);
 	for (auto& handler: updateHandlers_) {
-	    if (handler.first->bReleased) {
-			handler.second(handler.first);
-	    }
+		handler.second(handler.first);
 	}
+	guiManager_.Draw(&engine_);
 }
 
 Manager::ControlHandle Manager::AddLabel(const std::string& text, const olc::vf2d& pos, const olc::vf2d& size) {
@@ -68,8 +66,10 @@ Manager::ControlHandle Manager::AddButtonStrip(
 			{pos.x + leftPad + buttonWidth * i, pos.y},
 			{static_cast<float>(buttonWidth), 30});
 
-	    updateHandlers_[button] = [buttonHandler, i](olc::QuickGUI::BaseControl*) {
-			buttonHandler(i);
+	    updateHandlers_[button] = [buttonHandler, i](olc::QuickGUI::BaseControl* control) {
+			if (control->bReleased) {
+				buttonHandler(i);
+			}
 	    };
 
 		ret.controls.push_back(button);
@@ -90,8 +90,10 @@ Manager::ControlHandle Manager::AddColorSelector(const olc::vf2d& pos, const olc
 		auto* button = new ColorButton(
 		    guiManager_, nes::kColorPalette[i], tfm::format("%02X", i), btnPos, buttonSize);
 
-		updateHandlers_[button] = [buttonHandler, i](olc::QuickGUI::BaseControl*) {
-			buttonHandler(i);
+		updateHandlers_[button] = [buttonHandler, i](olc::QuickGUI::BaseControl* control) {
+			if (control->bReleased) {
+				buttonHandler(i);
+			}
 		};
 
 		ret.controls.push_back(button);

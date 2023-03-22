@@ -1,6 +1,7 @@
 #include "application.h"
 #include "nes/palette.h"
 #include "tfm/tinyformat.h"
+#include "ui/uielements.h"
 
 namespace {
 const olc::vf2d kPaletteButtonSize = {30.f, 30.f};
@@ -56,10 +57,30 @@ void Application::DrawScene() {
 void Application::BuildUI() {
 	// Palette
 	uiManager_.AddLabel("Palette", {}, {135, 20});
-	uiManager_.AddColorButton(IdToColor(editorModel_.GetPaletteColorId(0)), "0", {0, 20}, {30, 30}, {});
-	uiManager_.AddColorButton(IdToColor(editorModel_.GetPaletteColorId(1)), "1", {35, 20}, {30, 30}, {});
-	uiManager_.AddColorButton(IdToColor(editorModel_.GetPaletteColorId(2)), "2", {70, 20}, {30, 30}, {});
-	uiManager_.AddColorButton(IdToColor(editorModel_.GetPaletteColorId(3)), "3", {105, 20}, {30, 30}, {});
+	for (int i = 0; i < 4; ++i) {
+		auto button = uiManager_.AddColorButton(
+		    IdToColor(editorModel_.GetPaletteColorId(i)),
+		    std::to_string(i),
+			{(float)(i * 35), 20},
+			{30, 30},
+			[this, i](olc::QuickGUI::BaseControl* control) {
+				if (control->bReleased) {
+					currentlyEditedPaletteEntry_ = i;
+					colorSelectorHandle_.SetVisibility(true);
+				}
+			}
+		);
+		paletteButtons_.push_back(std::move(button));
+	}
+
+	colorSelectorHandle_ = uiManager_.AddColorSelector({10, 60}, {130, 580}, [this](int idx) {
+		editorModel_.SetPaletteColorId(currentlyEditedPaletteEntry_, idx);
+		colorSelectorHandle_.SetVisibility(false);
+		auto* control = paletteButtons_[currentlyEditedPaletteEntry_].controls.front();
+		auto* btn = static_cast<UI::ColorButton*>(control);
+		btn->SetColor(nes::kColorPalette[idx]);
+	});
+	colorSelectorHandle_.SetVisibility(false);
 
 	// CHR bank selector
 	uiManager_.AddButtonStrip(4, {330, 330}, {150, 30},
