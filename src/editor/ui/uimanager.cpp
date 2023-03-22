@@ -37,4 +37,15 @@ void Manager::AddColorButton(const olc::Pixel& color, const std::string& text, c
 	updateHandlers_[button] = handler;
 }
 
+void Manager::AddButtonStrip(uint8_t buttonCount, const olc::vf2d& pos, const olc::vf2d& size, std::function<void(int)> buttonHandler) {
+	auto buttonWidth = std::min(static_cast<int>(size.x) / buttonCount, 30);
+	auto leftPad = (size.x - buttonWidth * buttonCount) / 2;
+	for (int i = 0; i < buttonCount; ++i) {
+		auto* button = new olc::QuickGUI::Button(guiManager_, std::to_string(i), {pos.x + leftPad + buttonWidth * i, pos.y}, {static_cast<float>(buttonWidth), 30});
+		updateHandlers_[button] = [buttonHandler, i](olc::QuickGUI::BaseControl*) {
+			buttonHandler(i);
+		};
+	}
+}
+
 } // namespace Editor::UI

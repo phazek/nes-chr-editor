@@ -17,6 +17,7 @@ public:
 	void AddLabel(const std::string& text, const olc::vf2d& pos, const olc::vf2d& size);
 	void AddColorButton(const olc::Pixel& color, const std::string& text, const olc::vf2d& pos,
 		const olc::vf2d& size, UpdateHandler_t handler);
+	void AddButtonStrip(uint8_t buttonCount, const olc::vf2d& pos, const olc::vf2d& size, std::function<void(int)> buttonHandler);
 
 private:
 	olc::PixelGameEngine& engine_;
