@@ -20,6 +20,11 @@ void Manager::Update() {
 
 void Manager::Draw() {
 	guiManager_.Draw(&engine_);
+	for (auto& handler: updateHandlers_) {
+	    if (handler.first->bReleased) {
+			handler.second(handler.first);
+	    }
+	}
 }
 
 void Manager::AddLabel(const std::string& text, const olc::vf2d& pos, const olc::vf2d& size) {
