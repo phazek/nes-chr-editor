@@ -23,6 +23,12 @@ struct Tile {
 
 namespace Editor {
 
+Model::Model() {
+	for (int i = 0; i < 256; ++i) {
+		sprites_.push_back(new olc::Sprite(8, 8));
+	}
+}
+
 bool Model::SetChrData(std::span<uint8_t> data) {
 	if (data.size() != nes::kChrBankSize) {
 		tfm::printf("ERROR: invalid chr bank size: %s (correct %s)\n",
@@ -31,7 +37,7 @@ bool Model::SetChrData(std::span<uint8_t> data) {
 	}
 
 	data_ = std::move(data);
-	UpdateSprite();
+	UpdateSprites();
 	return true;
 }
 
@@ -45,14 +51,14 @@ void Model::SetPaletteColorId(uint8_t index, uint8_t id) {
 	assert(0 <= index && index < palette_.size());
 
 	palette_[index] = id;
-	UpdateSprite();
+	UpdateSprites();
 }
 
-olc::Sprite& Model::GetSpriteAtlas() {
-	return spriteAtlas_;
+const std::vector<olc::Sprite*>& Model::GetSprites() const {
+	return sprites_;
 }
 
-void Model::UpdateSprite() {
+void Model::UpdateSprites() {
 	static Tile t;
 	std::array<olc::Pixel, 4> colors = {
 		nes::kColorPalette[palette_[0]],
@@ -63,12 +69,13 @@ void Model::UpdateSprite() {
 
 	for (int spriteIdx = 0; spriteIdx < 256; ++spriteIdx) {
 		std::span<uint8_t> input{data_.data() + spriteIdx * 16, 16};
-		olc::vi2d topLeft = {(spriteIdx % 16) * 8, spriteIdx / 16 * 8};
 		t.FromData(input);
+
+		auto* sprite = sprites_[spriteIdx];
 		for (int y = 0; y < 8; ++y) {
 			for (int x = 0; x < 8; ++x) {
 				auto colorId = t.data[y * 8 + x];
-				spriteAtlas_.SetPixel(topLeft.x + x, topLeft.y + y, colors[colorId]);
+				sprite->SetPixel(x, y, colors[colorId]);
 			}
 		}
 	}

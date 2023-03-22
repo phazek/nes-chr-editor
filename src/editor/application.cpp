@@ -50,7 +50,7 @@ void Application::DrawScene() {
 
 	DrawLine({140, 0}, {140, ScreenHeight()}, style_.borderColor);
 
-	DrawSprite(150, 10, &(editorModel_.GetSpriteAtlas()), 2);
+	DrawSprite(150, 10, editorModel_.GetSprites()[0], 2);
 
 }
 
