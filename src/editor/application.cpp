@@ -54,12 +54,18 @@ void Application::DrawScene() {
 }
 
 void Application::BuildUI() {
+	// Palette
 	uiManager_.AddLabel("Palette", {}, {135, 20});
 	uiManager_.AddColorButton(IdToColor(editorModel_.GetPaletteColorId(0)), "0", {0, 20}, {30, 30}, {});
 	uiManager_.AddColorButton(IdToColor(editorModel_.GetPaletteColorId(1)), "1", {35, 20}, {30, 30}, {});
 	uiManager_.AddColorButton(IdToColor(editorModel_.GetPaletteColorId(2)), "2", {70, 20}, {30, 30}, {});
 	uiManager_.AddColorButton(IdToColor(editorModel_.GetPaletteColorId(3)), "3", {105, 20}, {30, 30}, {});
 
+	// CHR bank selector
+	uiManager_.AddButtonStrip(4, {330, 330}, {150, 30},
+		[this](int idx) {
+			editorModel_.SetChrData(nesFile_->GetChrBank(idx));
+	});
 }
 
 void Application::LoadNesFile(const std::string& path) {
