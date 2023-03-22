@@ -10,7 +10,7 @@ public:
 	bool WriteToFile(const std::string& filePath);
 
 	uint8_t GetChrBankCount() const;
-	[[nodiscard]] std::span<uint8_t> GetChrBank(uint8_t index) ;
+	[[nodiscard]] std::span<uint8_t> GetChrBank(uint8_t index);
 private:
 	std::vector<uint8_t> buffer_;
 	size_t chrRomStart_ = 0;

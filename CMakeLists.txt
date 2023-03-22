@@ -9,7 +9,7 @@ find_package(OpenGL REQUIRED)
 find_package(GLUT REQUIRED)
 
 file(GLOB srcs src/*.cpp)
-file(GLOB editor_srcs src/editor/*.cpp src/editor/ui/*.cpp)
+file(GLOB editor_srcs src/editor/*.cpp src/editor/ui/*.cpp src/nes/*.cpp)
 
 add_executable (nes-chr-editor ${srcs} ${editor_srcs})
 target_link_libraries(nes-chr-editor ${PNG_LIBRARIES} ${GLUT_LIBRARIES} ${OPENGL_LIBRARIES} )

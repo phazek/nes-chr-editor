@@ -36,12 +36,13 @@ namespace nes {
 		return nullptr;
 	}
 
-	file->buffer_.reserve(fsize);
+	file->buffer_.resize(fsize);
 	if (!input.read(reinterpret_cast<char*>(file->buffer_.data()), bufferSize)) {
 		tfm::printf("ERROR: unable to read entire file (%d/%d read)\n", input.gcount(), fsize);
 		return nullptr;
 	}
 
+	file->Init();
 	return file;
 }
 
@@ -63,7 +64,7 @@ std::span<uint8_t> File::GetChrBank(uint8_t index) {
 		return {buffer_.data() + startAddress, kChrBankSize};
 	}
 
-	tfm::printf("ERROR: chr bank index out of bounds (%d)\n", index);
+	tfm::printf("ERROR: chr bank index out of bounds (%d/%d)\n", index, GetChrBankCount());
 	return {};
 }
 
@@ -78,6 +79,7 @@ bool File::Init() {
 	const auto prgRomStart = kHeaderSize;
 	chrRomSize_ = buffer_[5] * kChrBankSize;
 	chrRomStart_ = prgRomStart + prgRomSize;
+	tfm::printf("NesFile initialized from buffer (size %d), bank count %d\n", buffer_.size(), GetChrBankCount());
 
 	return true;
 }
