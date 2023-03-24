@@ -32,7 +32,6 @@ private:
 
 	void BuildUI();
 
-	void DrawChrSprites(olc::vf2d pos, const std::vector<olc::Sprite*>& sprites);
 	void LoadNesFile(const std::string& path);
 };
 
