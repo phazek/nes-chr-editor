@@ -32,6 +32,7 @@ bool Application::OnUserUpdate(float fElapsedTime) {
 		return false;
 	}
 
+	UpdateUI(fElapsedTime);
 	DrawScene();
 
 	return true;
@@ -49,6 +50,8 @@ void Application::DrawScene() {
 	uiManager_.Draw();
 
 	DrawLine({140, 0}, {140, ScreenHeight()}, style_.borderColor);
+
+	bankSelectorUi_->Draw();
 }
 
 void Application::BuildUI() {
@@ -79,16 +82,20 @@ void Application::BuildUI() {
 	});
 	colorSelectorHandle_.SetVisibility(false);
 
-	// CHR bank selector
-	uiManager_.AddButtonStrip(4, {330, 330}, {150, 30},
-		[this](int idx) {
-			editorModel_.SetChrData(nesFile_->GetChrBank(idx));
-			selectedSpriteIndex_ = -1;
+	bankSelectorUi_ = new UI::ButtonStrip(*this, {330, 330}, {150, 30}, style_);
+	bankSelectorUi_->SetButtonHandler([this](int idx){
+		tfm::printf("CHR bank selected: %d\n", idx);
+		editorModel_.SetChrData(nesFile_->GetChrBank(idx));
 	});
+}
+
+void Application::UpdateUI(float fElapsedTime) {
+	bankSelectorUi_->Update(fElapsedTime);
 }
 
 void Application::LoadNesFile(const std::string& path) {
 	nesFile_ = nes::File::LoadFromFile(path);
+	bankSelectorUi_->SetButtonCount(nesFile_->GetChrBankCount());
 	editorModel_.SetChrData(nesFile_->GetChrBank(0));
 }
 
