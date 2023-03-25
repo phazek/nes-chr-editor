@@ -21,17 +21,6 @@ public:
 	void Draw();
 
 	ControlHandle AddLabel(const std::string& text, const olc::vf2d& pos, const olc::vf2d& size);
-	ControlHandle AddColorButton(const olc::Pixel& color,
-				     const std::string& text,
-				     const olc::vf2d& pos,
-				     const olc::vf2d& size,
-				     UpdateHandler_t handler);
-	ControlHandle AddButtonStrip(
-	    uint8_t buttonCount, const olc::vf2d& pos, const olc::vf2d& size,
-	    std::function<void(int)> buttonHandler);
-	ControlHandle AddColorSelector(
-	    const olc::vf2d& pos, const olc::vf2d& size,
-	    std::function<void(int)> buttonHandler);
 
 private:
 	olc::PixelGameEngine& engine_;
