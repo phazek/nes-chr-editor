@@ -1,3 +1,5 @@
+#pragma once
+
 #include "olc/olcPixelGameEngine.h"
 #include <cstdint>
 #include <span>

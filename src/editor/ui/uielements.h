@@ -1,3 +1,5 @@
+#pragma once
+
 #include "olc/olcPGEX_QuickGUI.h"
 
 namespace Editor::UI {

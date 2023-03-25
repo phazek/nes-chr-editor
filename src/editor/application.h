@@ -1,3 +1,5 @@
+#pragma once
+
 #include "olc/olcPixelGameEngine.h"
 #include "olc/olcPGEX_QuickGUI.h"
 #include "ui/uimanager.h"
