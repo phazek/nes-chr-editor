@@ -1,7 +1,6 @@
 #pragma once
 
 #include "olc/olcPGEX_QuickGUI.h"
-#include "../palettespritecache.h"
 #include "../style.h"
 
 #include <unordered_map>
@@ -37,7 +36,6 @@ public:
 private:
 	olc::PixelGameEngine& engine_;
 	olc::QuickGUI::Manager guiManager_;
-	PaletteSpriteCache spriteCache_;
 	std::unordered_map<olc::QuickGUI::BaseControl*, UpdateHandler_t> updateHandlers_;
 };
 
