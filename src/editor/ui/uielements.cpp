@@ -1,54 +1,74 @@
 #include "uielements.h"
 #include <algorithm>
 
+namespace {
+struct Bounds {
+	olc::vf2d min;
+	olc::vf2d max;
+};
+
+template<typename T>
+bool IsInBounds(const olc::v2d_generic<T>& point, const Bounds& bounds) {
+	return (bounds.min.x < point.x && bounds.min.y < point.y) &&
+	       (bounds.max.x > point.x && bounds.max.y > point.y);
+}
+
+} // namespace
+
 namespace Editor::UI {
 
-ColorButton::ColorButton(olc::QuickGUI::Manager& manager,
-			olc::Pixel color,
-			const std::string& text,
-			const olc::vf2d& pos,
-			const olc::vf2d& size)
-: olc::QuickGUI::Button(manager, text, pos, size)
-, sprite_(size.x, size.y)
-, spritePressed_(size.x, size.y)
-{
-	SetColor(color);
-}
+ColorButton::ColorButton(olc::PixelGameEngine& pge, olc::Pixel color,
+	     const std::string& text, const olc::vf2d& pos,
+	     const olc::vf2d& size, const Style& style)
+: engine_(pge)
+, color_(color)
+, text_(text)
+, style_(style) {}
 
-void ColorButton::Draw(olc::PixelGameEngine* pge) {
-	if (!bVisible) {
-	    return;
-	}
+void ColorButton::Update(float fElapsedTime) {
+	auto mousePos = engine_.GetMousePos();
+	auto mousePressed = engine_.GetMouse(olc::Mouse::LEFT).bPressed;
+	auto mouseReleased = engine_.GetMouse(olc::Mouse::LEFT).bReleased;
+	auto bounds = Bounds{{pos_.x, pos_.y}, {pos_.x + size_.x, pos_.y + size_.y}};
 
-	if (bHeld) {
-	    pge->DrawSprite(vPos, &spritePressed_);
-	} else {
-	    pge->DrawSprite(vPos, &sprite_);
-	}
-
-	if (!sText.empty()) {
-	    olc::vf2d vText = pge->GetTextSizeProp(sText);
-	    pge->DrawStringProp(vPos + (vSize - vText) * 0.5f, sText,
-				m_manager.colText);
+	if (IsInBounds(mousePos, bounds)) {
+	    if (pressed_ && mouseReleased) {
+			pressed_ = false;
+			buttonHandler_();
+	    } else if (mousePressed) {
+			pressed_ = true;
+	    }
 	}
 }
 
-void ColorButton::DrawDecal(olc::PixelGameEngine* pge) {
-	// TODO
-	olc::QuickGUI::Button::DrawDecal(pge);
+void ColorButton::Draw() {
+	engine_.FillRect(pos_, size_, color_);
+
+	if (selected_) {
+		engine_.DrawRect(pos_, size_, style_.borderColor);
+	}
+
+	olc::vf2d textPos{pos_.x + (size_.x - textSize_.x) / 2,
+					  pos_.y + (size_.y - textSize_.y) / 2};
+
+	engine_.DrawString(textPos, text_, style_.textColor);
 }
 
 void ColorButton::SetColor(olc::Pixel color) {
 	color_ = color;
-	std::fill(sprite_.pColData.begin(), sprite_.pColData.end(), color);
-	color.r = color.r / 2;
-	color.g = color.g / 2;
-	color.b = color.b / 2;
-	std::fill(spritePressed_.pColData.begin(), spritePressed_.pColData.end(), color);
 }
 
 void ColorButton::SetText(const std::string& text) {
-	sText = text;
+	text_ = text;
+	textSize_ = engine_.GetTextSize(text_);
+}
+
+void ColorButton::SetSelected(bool selected) {
+	selected_ = selected;
+}
+
+void ColorButton::SetButtonHandler(ButtonHandler_t handler) {
+	buttonHandler_ = std::move(handler);
 }
 
 // ButtonStrip
@@ -65,18 +85,13 @@ ButtonStrip::ButtonStrip(
 }
 
 void ButtonStrip::Update(float fElapsedTime) {
-	auto boundsCheck = [](const olc::vi2d& mousePos, const Button& button) {
-	    return (button.pos.x < mousePos.x && button.pos.y < mousePos.y) &&
-		   (button.pos.x + button.size.x > mousePos.x &&
-		    button.pos.y + button.size.y > mousePos.y);
-	};
-
 	auto mousePos = engine_.GetMousePos();
 	auto mousePressed = engine_.GetMouse(olc::Mouse::LEFT).bPressed;
 	auto mouseReleased = engine_.GetMouse(olc::Mouse::LEFT).bReleased;
 	for (int i = 0; i < buttons_.size(); ++i) {
 	    auto& button = buttons_[i];
-	    if (boundsCheck(mousePos, button)) {
+		auto bounds = Bounds{{button.pos.x, button.pos.y}, {button.pos.x + button.size.x, button.pos.y + button.size.y}};
+	    if (IsInBounds(mousePos, bounds)) {
 			if (button.pressed && mouseReleased) {
 				button.pressed = false;
 				buttonHandler_(i);

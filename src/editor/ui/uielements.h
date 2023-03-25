@@ -6,24 +6,33 @@
 
 namespace Editor::UI {
 
-class ColorButton : public olc::QuickGUI::Button
+using ButtonHandler_t = std::function<void()>;
+
+class ColorButton
 {
 public:
-	ColorButton(olc::QuickGUI::Manager& manager,
-		olc::Pixel color,
-		const std::string& text,
-		const olc::vf2d& pos,
-		const olc::vf2d& size);
+	ColorButton(olc::PixelGameEngine& pge, olc::Pixel color,
+		const std::string& text, const olc::vf2d& pos,
+		const olc::vf2d& size, const Style& style);
 
 	void SetColor(olc::Pixel color);
 	void SetText(const std::string& text);
+	void SetSelected(bool selected);
+	void SetButtonHandler(ButtonHandler_t handler);
 
-	void Draw(olc::PixelGameEngine* pge) override;
-	void DrawDecal(olc::PixelGameEngine* pge) override;
+	void Update(float fElapsedTime);
+	void Draw();
 private:
-	olc::Pixel color_;
-	olc::Sprite sprite_;
-	olc::Sprite spritePressed_;
+	olc::PixelGameEngine& engine_;
+	olc::Pixel color_{};
+	std::string text_{};
+	olc::vf2d textSize_{};
+	olc::vf2d pos_;
+	olc::vf2d size_;
+	const Style& style_;
+	bool selected_ = false;
+	bool pressed_ = false;
+	ButtonHandler_t buttonHandler_{};
 };
 
 class ButtonStrip {
