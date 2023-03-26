@@ -24,12 +24,11 @@ private:
 	Style style_;
 	UI::Manager uiManager_;
 	std::unique_ptr<nes::File> nesFile_;
-	std::vector<UI::Manager::ControlHandle> paletteButtons_;
-	UI::Manager::ControlHandle colorSelectorHandle_;
 	int currentlyEditedPaletteEntry_ = -1;
 	int selectedSpriteIndex_ = 5;
 
 	UI::ButtonStrip* bankSelectorUi_;
+	UI::PaletteSelector* paletteSelector_;
 
 
 	bool HandleInput();

@@ -52,35 +52,21 @@ void Application::DrawScene() {
 	DrawLine({140, 0}, {140, ScreenHeight()}, style_.borderColor);
 
 	bankSelectorUi_->Draw();
+	paletteSelector_->Draw();
 }
 
 void Application::BuildUI() {
 	// Palette
 	uiManager_.AddLabel("Palette", {}, {135, 20});
+	paletteSelector_ = new UI::PaletteSelector{*this, {0, 20}, {140, 30}, style_};
 	for (int i = 0; i < 4; ++i) {
-		auto button = uiManager_.AddColorButton(
-		    IdToColor(editorModel_.GetPaletteColorId(i)),
-		    std::to_string(i),
-			{(float)(i * 35), 20},
-			{30, 30},
-			[this, i](olc::QuickGUI::BaseControl* control) {
-				if (control->bReleased) {
-					currentlyEditedPaletteEntry_ = i;
-					colorSelectorHandle_.SetVisibility(true);
-				}
-			}
-		);
-		paletteButtons_.push_back(std::move(button));
+		paletteSelector_->SetColor(i, IdToColor(editorModel_.GetPaletteColorId(i)));
 	}
-
-	colorSelectorHandle_ = uiManager_.AddColorSelector({10, 60}, {130, 580}, [this](int idx) {
-		editorModel_.SetPaletteColorId(currentlyEditedPaletteEntry_, idx);
-		colorSelectorHandle_.SetVisibility(false);
-		auto* control = paletteButtons_[currentlyEditedPaletteEntry_].controls.front();
-		auto* btn = static_cast<UI::ColorButton*>(control);
-		btn->SetColor(nes::kColorPalette[idx]);
+	paletteSelector_->SetButtonHandler([this](int idx){
+		tfm::printf("Palette entry selected: %d\n", idx);
+		currentlyEditedPaletteEntry_ = idx;
+		// TODO: open color selector for given entry
 	});
-	colorSelectorHandle_.SetVisibility(false);
 
 	bankSelectorUi_ = new UI::ButtonStrip(*this, {330, 330}, {150, 30}, style_);
 	bankSelectorUi_->SetButtonHandler([this](int idx){
@@ -91,6 +77,7 @@ void Application::BuildUI() {
 
 void Application::UpdateUI(float fElapsedTime) {
 	bankSelectorUi_->Update(fElapsedTime);
+	paletteSelector_->Update(fElapsedTime);
 }
 
 void Application::LoadNesFile(const std::string& path) {
