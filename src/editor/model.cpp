@@ -17,6 +17,22 @@ void Model::Tile::ParseData(const std::span<uint8_t>& src) {
 	}
 }
 
+std::array<uint8_t, 16> Model::Tile::ToRawData() const {
+	std::array<uint8_t, 16> res;
+	res.fill(0);
+
+	for (int i = 0; i < data.size(); ++i) {
+		int row = i / 8;
+		int col = i % 8;
+		uint8_t px = data[i];
+
+		res[row]     |=  (px & 0b01)       << (7-col);
+		res[8 + row] |= ((px & 0b10) >> 1) << (7-col);
+	}
+
+	return res;
+}
+
 Model::Model() {
 	for (int i = 0; i < 256; ++i) {
 		sprites_.push_back(new olc::Sprite(8, 8));
@@ -56,6 +72,7 @@ const std::vector<olc::Sprite*>& Model::GetSprites() const {
 void Model::SetTilePixel(int tileIdx, olc::vi2d coord, uint8_t colorId) {
 	auto& tile = tiles_[tileIdx];
 	tile.data[coord.y * 8 + coord.x] = colorId;
+	tile.dirty = true;
 	UpdateSprite(tileIdx);
 }
 

@@ -20,8 +20,10 @@ public:
 private:
 	struct Tile {
 		void ParseData(const std::span<uint8_t>& src);
+		std::array<uint8_t, 16> ToRawData() const;
 
 		std::array<uint8_t, 8 * 8> data;
+		bool dirty = false;
 	};
 
 	std::span<uint8_t> data_;
