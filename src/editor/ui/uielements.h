@@ -86,4 +86,22 @@ private:
 	std::vector<Button> buttons_;
 };
 
+class ColorSelector: public Base {
+public:
+	using Handler_t = std::function<void(int)>;
+
+	ColorSelector(olc::PixelGameEngine& pge, const olc::vf2d& pos,
+		    const olc::vf2d& size, const Style& style);
+
+	void Update(float fElapsedTime);
+	void Draw();
+	void SetButtonHandler(Handler_t handler);
+
+private:
+	Handler_t buttonHandler_;
+	std::vector<std::unique_ptr<ColorButton>> buttons_;
+
+	void InitializeButtons();
+};
+
 } //namespace Editor::UI

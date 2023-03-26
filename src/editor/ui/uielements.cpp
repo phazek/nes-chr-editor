@@ -1,4 +1,7 @@
 #include "uielements.h"
+#include "nes/palette.h"
+
+#include "tfm/tinyformat.h"
 
 namespace {
 struct Bounds {
@@ -190,6 +193,57 @@ void ButtonStrip::SetButtonCount(unsigned int count) {
 
 void Editor::UI::ButtonStrip::SetButtonHandler(Handler_t handler) {
 	buttonHandler_ = std::move(handler);
+}
+
+// ColorSelector
+ColorSelector::ColorSelector(
+	olc::PixelGameEngine& pge,
+	const olc::vf2d& pos,
+	const olc::vf2d& size,
+	const Style& style)
+: Base(pge, pos, size, style)
+{
+	InitializeButtons();
+}
+
+void ColorSelector::Update(float fElapsedTime) {
+	for (auto& button : buttons_) {
+		button->Update(fElapsedTime);
+	}
+}
+
+void ColorSelector::Draw() {
+	if (!visible_) {
+		return;
+	}
+	for (auto& button : buttons_) {
+		button->Draw();
+	}
+}
+
+void ColorSelector::SetButtonHandler(Handler_t handler) {
+	buttonHandler_ = std::move(handler);
+}
+
+void ColorSelector::InitializeButtons() {
+	const int kButtonPerRow = 5;
+	olc::vf2d gridSize = {size_.x / kButtonPerRow, size_.x / kButtonPerRow};
+	olc::vf2d buttonSize = gridSize - olc::vf2d{1.f, 1.f};
+
+	for (int i = 0; i < nes::kColorPalette.size(); ++i) {
+		olc::vf2d pos = pos_ + gridSize * olc::vi2d{i % kButtonPerRow, i / kButtonPerRow};
+		auto button = std::make_unique<ColorButton>(
+			engine_,
+			nes::kColorPalette[i],
+			tfm::format("%02X", i),
+			pos,
+			buttonSize,
+			style_);
+		button->SetButtonHandler([i, this](){
+			buttonHandler_(i);
+		});
+		buttons_.push_back(std::move(button));
+	}
 }
 
 } //namespace Editor::UI
