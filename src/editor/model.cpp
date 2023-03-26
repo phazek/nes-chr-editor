@@ -53,6 +53,9 @@ bool Model::SetChrData(std::span<uint8_t> data) {
 
 	data_ = std::move(data);
 	ParseTiles();
+	// Clear undo stack
+	undoStack_ = {};
+
 	return true;
 }
 
@@ -73,9 +76,16 @@ const std::vector<olc::Sprite*>& Model::GetSprites() const {
 	return sprites_;
 }
 
-void Model::SetTilePixel(int tileIdx, olc::vi2d coord, uint8_t colorId) {
+void Model::SetTilePixel(uint8_t tileIdx, olc::vi2d coord, uint8_t colorId) {
 	auto& tile = tiles_[tileIdx];
-	tile.data[coord.y * 8 + coord.x] = colorId;
+	auto& pixel = tile.data[coord.y * 8 + coord.x];
+	if (pixel == colorId) {
+		return;
+	}
+
+	undoStack_.push({tileIdx, coord, pixel});
+
+	pixel = colorId;
 	tile.dirty = true;
 	UpdateSprite(tileIdx);
 }
@@ -92,6 +102,16 @@ void Model::Save() {
 		for (int j = 0; j < raw.size(); ++j) {
 			data_[startAddress + j] = raw[j];
 		}
+	}
+}
+
+void Model::Undo() {
+	if (!undoStack_.empty()) {
+		auto undoItem = undoStack_.top();
+		undoStack_.pop();
+		auto idx = undoItem.coord.y * 8 + undoItem.coord.x;
+		tiles_[undoItem.tileIdx_].data[idx] = undoItem.colorId;
+		UpdateSprite(undoItem.tileIdx_);
 	}
 }
 
