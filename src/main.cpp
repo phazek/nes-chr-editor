@@ -3,7 +3,7 @@
 int main(int argc, char** argv) {
 	Editor::Application app;
 
-	if (app.Construct(640, 480, 2, 2)) {
+	if (app.Construct(850, 480, 2, 2)) {
 		app.Start();
 	}
 
