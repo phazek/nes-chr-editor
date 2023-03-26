@@ -21,6 +21,10 @@ Application::Application() {
 	BuildUI();
 }
 
+void Application::SetRomPath(const std::string& path) {
+	LoadNesFile(path);
+}
+
 bool Application::OnUserCreate() {
 
 	return true;

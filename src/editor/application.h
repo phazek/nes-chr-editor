@@ -12,6 +12,7 @@ class Application: public olc::PixelGameEngine {
 public:
 	Application();
 
+	void SetRomPath(const std::string& path);
 	// olc::PixelGameEngine
 	bool OnUserCreate() override;
 	bool OnUserUpdate(float fElapsedTime) override;
