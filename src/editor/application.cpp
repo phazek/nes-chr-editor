@@ -43,6 +43,11 @@ bool Application::HandleInput() {
 	if (GetKey(olc::Key::K2).bReleased) paletteSelector_->SetSelected(1);
 	if (GetKey(olc::Key::K3).bReleased) paletteSelector_->SetSelected(2);
 	if (GetKey(olc::Key::K4).bReleased) paletteSelector_->SetSelected(3);
+	if (GetKey(olc::Key::S).bReleased) {
+		editorModel_.Save();
+		nesFile_->WriteToFile("copy.nes");
+		tfm::printf("Saved successfully\n");
+	}
 
 	return true;
 }
