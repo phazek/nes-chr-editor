@@ -72,6 +72,7 @@ public:
 			const olc::vf2d& size, const Style& style);
 
 	void SetColor(uint8_t idx, olc::Pixel color);
+	void SetSelected(uint8_t idx);
 	void SetButtonHandler(Handler_t handler);
 	void Update(float fElapsedTime);
 	void Draw();

@@ -152,6 +152,13 @@ void PaletteSelector::SetColor(uint8_t idx, olc::Pixel color) {
 	buttons_[idx].SetColor(color);
 }
 
+void PaletteSelector::SetSelected(uint8_t idx) {
+	for (auto& button : buttons_) {
+		button.SetSelected(false);
+	}
+	buttons_[idx].SetSelected(true);
+}
+
 void PaletteSelector::SetButtonHandler(Handler_t handler) {
 	buttonHandler_ = std::move(handler);
 	for (int i = 0; i < 4; ++i) {

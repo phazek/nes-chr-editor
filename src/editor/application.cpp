@@ -39,6 +39,10 @@ bool Application::OnUserUpdate(float fElapsedTime) {
 
 bool Application::HandleInput() {
 	if (GetKey(olc::Key::ESCAPE).bReleased) return false; // Exit on ESC
+	if (GetKey(olc::Key::K1).bReleased) paletteSelector_->SetSelected(0);
+	if (GetKey(olc::Key::K2).bReleased) paletteSelector_->SetSelected(1);
+	if (GetKey(olc::Key::K3).bReleased) paletteSelector_->SetSelected(2);
+	if (GetKey(olc::Key::K4).bReleased) paletteSelector_->SetSelected(3);
 
 	return true;
 }
