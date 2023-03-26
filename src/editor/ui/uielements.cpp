@@ -146,11 +146,12 @@ PaletteSelector::PaletteSelector(
 	const olc::vf2d& size, const Style& style)
 : Base(pge, pos, size, style)
 {
-	auto buttonWidth = size_.x / 4;
+	const auto gridSize = size_.x / 4;
+	auto buttonWidth = gridSize - 2;
 	const olc::vf2d buttonSize = olc::vf2d{buttonWidth, size_.y};
 
 	for (int i = 0; i < 4; ++i) {
-		auto position = pos_ + olc::vf2d{i * buttonWidth, 0};
+		auto position = pos_ + olc::vf2d{i * gridSize, 0};
 		buttons_.emplace_back(engine_, style_.bgColor, std::to_string(i + 1),
 			position, buttonSize, style_);
 	}
