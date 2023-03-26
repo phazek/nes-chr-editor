@@ -56,6 +56,7 @@ void Application::DrawScene() {
 	paletteSelector_->Draw();
 	colorSelector_->Draw();
 	bankDisplay_->Draw();
+	spriteDisplay_->Draw();
 }
 
 void Application::BuildUI() {
@@ -96,9 +97,21 @@ void Application::BuildUI() {
 	});
 
 	// CHR bank display
-	bankDisplay_ = new UI::BankDisplay{editorModel_, *this, {150.f, 10}, {400, 400}, style_};
-	bankDisplay_->SetButtonHandler([](int idx){
+	bankDisplay_ = new UI::BankDisplay{editorModel_, *this, {150.f, 10.f}, {400, 400}, style_};
+	bankDisplay_->SetButtonHandler([this](int idx){
 		tfm::printf("Tile %d selected\n", idx);
+		selectedSpriteIndex_ = idx;
+		spriteDisplay_->SetSprite(editorModel_.GetSprites()[selectedSpriteIndex_]);
+		spriteDisplay_->SetVisibility(true);
+	});
+
+	// Editor panel
+	spriteDisplay_ = new UI::SpriteDisplay{*this, {580, 10.f}, 32, style_};
+	spriteDisplay_->SetVisibility(false);
+	spriteDisplay_->SetButtonHandler([this](olc::vi2d coord) {
+		auto selectedColor = paletteSelector_->GetSelected();
+		assert(selectedColor >= 0);
+		editorModel_.SetTilePixel(selectedSpriteIndex_, coord, selectedColor);
 	});
 }
 
@@ -107,6 +120,7 @@ void Application::UpdateUI(float fElapsedTime) {
 	paletteSelector_->Update(fElapsedTime);
 	colorSelector_->Update(fElapsedTime);
 	bankDisplay_->Update(fElapsedTime);
+	spriteDisplay_->Update(fElapsedTime);
 }
 
 void Application::LoadNesFile(const std::string& path) {

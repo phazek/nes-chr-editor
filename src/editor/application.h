@@ -27,6 +27,7 @@ private:
 	UI::PaletteSelector* paletteSelector_;
 	UI::ColorSelector* colorSelector_;
 	UI::BankDisplay* bankDisplay_;
+	UI::SpriteDisplay* spriteDisplay_;
 
 
 	bool HandleInput();
