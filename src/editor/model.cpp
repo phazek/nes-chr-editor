@@ -5,27 +5,22 @@
 
 #include "tfm/tinyformat.h"
 
-namespace {
-struct Tile {
-	std::array<uint8_t, 8 * 8> data;
+namespace Editor {
 
-	void FromData(const std::span<uint8_t>& src) {
-		for (int row = 0; row < 8; ++row) {
-			for (int col = 0; col < 8; ++col) {
-				bool ll = !!(src[row] & (1 << (7 - col)));
-				bool hh = !!(src[8 + row] & (1 << (7 - col)));
-				data[row * 8 + col] = (hh ? 2 : 0) | (ll ? 1 : 0);
-			}
+void Model::Tile::ParseData(const std::span<uint8_t>& src) {
+	for (int row = 0; row < 8; ++row) {
+		for (int col = 0; col < 8; ++col) {
+			bool ll = !!(src[row] & (1 << (7 - col)));
+			bool hh = !!(src[8 + row] & (1 << (7 - col)));
+			data[row * 8 + col] = (hh ? 2 : 0) | (ll ? 1 : 0);
 		}
 	}
-};
-} // namespace
-
-namespace Editor {
+}
 
 Model::Model() {
 	for (int i = 0; i < 256; ++i) {
 		sprites_.push_back(new olc::Sprite(8, 8));
+		tiles_.emplace_back();
 	}
 }
 
@@ -37,7 +32,7 @@ bool Model::SetChrData(std::span<uint8_t> data) {
 	}
 
 	data_ = std::move(data);
-	UpdateSprites();
+	ParseTiles();
 	return true;
 }
 
@@ -58,8 +53,17 @@ const std::vector<olc::Sprite*>& Model::GetSprites() const {
 	return sprites_;
 }
 
+void Model::ParseTiles() {
+	static const int kRawTileSize = 16;
+	for (int i = 0; i < 256; ++i) {
+		std::span<uint8_t> input{data_.data() + i * kRawTileSize, kRawTileSize};
+		tiles_[i].ParseData(input);
+	}
+
+	UpdateSprites();
+}
+
 void Model::UpdateSprites() {
-	static Tile t;
 	std::array<olc::Pixel, 4> colors = {
 		nes::kColorPalette[palette_[0]],
 		nes::kColorPalette[palette_[1]],
@@ -68,13 +72,10 @@ void Model::UpdateSprites() {
 	};
 
 	for (int spriteIdx = 0; spriteIdx < 256; ++spriteIdx) {
-		std::span<uint8_t> input{data_.data() + spriteIdx * 16, 16};
-		t.FromData(input);
-
 		auto* sprite = sprites_[spriteIdx];
 		for (int y = 0; y < 8; ++y) {
 			for (int x = 0; x < 8; ++x) {
-				auto colorId = t.data[y * 8 + x];
+				auto colorId = tiles_[spriteIdx].data[y * 8 + x];
 				sprite->SetPixel(x, y, colors[colorId]);
 			}
 		}

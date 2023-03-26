@@ -17,10 +17,18 @@ public:
 
 	const std::vector<olc::Sprite*>& GetSprites() const;
 private:
+	struct Tile {
+		void ParseData(const std::span<uint8_t>& src);
+
+		std::array<uint8_t, 8 * 8> data;
+	};
+
 	std::span<uint8_t> data_;
 	std::array<uint8_t, 4> palette_{0x22, 0x16, 0x27, 0x18};
 	std::vector<olc::Sprite*> sprites_;
+	std::vector<Tile> tiles_;
 
+	void ParseTiles();
 	void UpdateSprites();
 };
 
