@@ -51,6 +51,7 @@ void Application::DrawScene() {
 	bankSelectorUi_->Draw();
 	paletteSelector_->Draw();
 	colorSelector_->Draw();
+	bankDisplay_->Draw();
 }
 
 void Application::BuildUI() {
@@ -89,12 +90,19 @@ void Application::BuildUI() {
 		tfm::printf("CHR bank selected: %d\n", idx);
 		editorModel_.SetChrData(nesFile_->GetChrBank(idx));
 	});
+
+	// CHR bank display
+	bankDisplay_ = new UI::BankDisplay{editorModel_, *this, {150.f, 10}, {400, 400}, style_};
+	bankDisplay_->SetButtonHandler([](int idx){
+		tfm::printf("Tile %d selected\n", idx);
+	});
 }
 
 void Application::UpdateUI(float fElapsedTime) {
 	bankSelectorUi_->Update(fElapsedTime);
 	paletteSelector_->Update(fElapsedTime);
 	colorSelector_->Update(fElapsedTime);
+	bankDisplay_->Update(fElapsedTime);
 }
 
 void Application::LoadNesFile(const std::string& path) {

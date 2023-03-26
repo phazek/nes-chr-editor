@@ -89,6 +89,49 @@ void ColorButton::SetButtonHandler(ButtonHandler_t handler) {
 	buttonHandler_ = std::move(handler);
 }
 
+// SpriteButton
+SpriteButton::SpriteButton(
+	olc::PixelGameEngine& pge,
+	olc::Sprite* sprite,
+	const olc::vf2d& pos,
+	const olc::vf2d& size,
+	const Style& style)
+: Base(pge, pos, size, style)
+, sprite_(sprite)
+{
+}
+
+void SpriteButton::Update(float fElapsedTime) {
+	auto mousePos = engine_.GetMousePos();
+	auto mousePressed = engine_.GetMouse(olc::Mouse::LEFT).bPressed;
+	auto mouseReleased = engine_.GetMouse(olc::Mouse::LEFT).bReleased;
+	auto bounds = Bounds{{pos_.x, pos_.y}, {pos_.x + size_.x, pos_.y + size_.y}};
+
+	if (IsInBounds(mousePos, bounds)) {
+	    if (pressed_ && mouseReleased) {
+			pressed_ = false;
+			buttonHandler_();
+	    } else if (mousePressed) {
+			pressed_ = true;
+	    }
+	}
+}
+
+void SpriteButton::Draw(int scale) {
+	engine_.DrawSprite(pos_, sprite_, scale);
+	if (selected_) {
+		engine_.DrawRect(pos_, size_ * scale, style_.borderColor);
+	}
+}
+
+void SpriteButton::SetSelected(bool selected) {
+	selected_ = selected;
+}
+
+void SpriteButton::SetButtonHandler(ButtonHandler_t handler) {
+	buttonHandler_ = std::move(handler);
+}
+
 // PaletteSelector
 PaletteSelector::PaletteSelector(
 	olc::PixelGameEngine& pge, const olc::vf2d& pos,
@@ -236,6 +279,59 @@ void ColorSelector::InitializeButtons() {
 			engine_,
 			nes::kColorPalette[i],
 			tfm::format("%02X", i),
+			pos,
+			buttonSize,
+			style_);
+		button->SetButtonHandler([i, this](){
+			buttonHandler_(i);
+		});
+		buttons_.push_back(std::move(button));
+	}
+}
+
+// BankDisplay
+BankDisplay::BankDisplay(
+	Model& model,
+	olc::PixelGameEngine& pge,
+	const olc::vf2d& pos,
+	const olc::vf2d& size,
+	const Style& style)
+: Base(pge, pos, size, style)
+, model_(model)
+{
+	InitializeButtons();
+}
+
+void BankDisplay::Update(float fElapsedTime) {
+	for (auto& button : buttons_) {
+		button->Update(fElapsedTime);
+	}
+}
+
+void BankDisplay::Draw() {
+	if (!visible_) {
+		return;
+	}
+	for (auto& button : buttons_) {
+		button->Draw(2);
+	}
+}
+
+void BankDisplay::SetButtonHandler(Handler_t handler) {
+	buttonHandler_ = std::move(handler);
+}
+
+void BankDisplay::InitializeButtons() {
+	const int kButtonPerRow = 16;
+	olc::vf2d gridSize = {18.f, 18.f};
+	olc::vf2d buttonSize = gridSize - olc::vf2d{2.f, 2.f};
+	auto& sprites = model_.GetSprites();
+
+	for (int i = 0; i < sprites.size(); ++i) {
+		olc::vf2d pos = pos_ + gridSize * olc::vi2d{i % kButtonPerRow, i / kButtonPerRow};
+		auto button = std::make_unique<SpriteButton>(
+			engine_,
+			sprites[i],
 			pos,
 			buttonSize,
 			style_);

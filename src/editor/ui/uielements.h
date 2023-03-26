@@ -1,6 +1,7 @@
 #pragma once
 
 #include "../style.h"
+#include "editor/model.h"
 #include <functional>
 
 namespace Editor::UI {
@@ -40,6 +41,24 @@ private:
 	olc::Pixel color_{};
 	std::string text_{};
 	olc::vf2d textSize_{};
+	bool selected_ = false;
+	bool pressed_ = false;
+	ButtonHandler_t buttonHandler_{};
+};
+
+class SpriteButton : public Base {
+public:
+	SpriteButton(olc::PixelGameEngine& pge, olc::Sprite* sprite, const olc::vf2d& pos,
+		const olc::vf2d& size, const Style& style);
+
+	void SetSprite(olc::Sprite* sprite);
+	void SetSelected(bool selected);
+	void SetButtonHandler(ButtonHandler_t handler);
+
+	void Update(float fElapsedTime);
+	void Draw(int scale = 1);
+private:
+	olc::Sprite* sprite_ = nullptr;
 	bool selected_ = false;
 	bool pressed_ = false;
 	ButtonHandler_t buttonHandler_{};
@@ -100,6 +119,25 @@ public:
 private:
 	Handler_t buttonHandler_;
 	std::vector<std::unique_ptr<ColorButton>> buttons_;
+
+	void InitializeButtons();
+};
+
+class BankDisplay: public Base {
+public:
+	using Handler_t = std::function<void(int)>;
+
+	BankDisplay(Model& model, olc::PixelGameEngine& pge, const olc::vf2d& pos,
+		    const olc::vf2d& size, const Style& style);
+
+	void Update(float fElapsedTime);
+	void Draw();
+	void SetButtonHandler(Handler_t handler);
+
+private:
+	Model& model_;
+	Handler_t buttonHandler_;
+	std::vector<std::unique_ptr<SpriteButton>> buttons_;
 
 	void InitializeButtons();
 };
