@@ -148,4 +148,22 @@ private:
 	void SetSelected(int idx);
 };
 
+class SpriteDisplay : public Base {
+public:
+	using Handler_t = std::function<void(olc::vi2d)>;
+
+	SpriteDisplay(olc::PixelGameEngine& pge, const olc::vf2d& pos,
+		    int scale, const Style& style);
+
+	void Update(float fElapsedTime);
+	void Draw();
+	void SetSprite(olc::Sprite* sprite);
+	void SetButtonHandler(Handler_t handler);
+
+private:
+	int scale_ = 1;
+	olc::Sprite* sprite_ = nullptr;
+	Handler_t buttonHandler_{};
+};
+
 } //namespace Editor::UI

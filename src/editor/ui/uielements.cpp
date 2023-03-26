@@ -377,4 +377,44 @@ void BankDisplay::SetSelected(int idx) {
 	buttons_[selectedButtonIdx_]->SetSelected(true);
 }
 
+// SpriteDisplay
+SpriteDisplay::SpriteDisplay(olc::PixelGameEngine& pge, const olc::vf2d& pos,
+		int scale, const Style& style)
+: Base(pge, pos, olc::vf2d{8, 8} * scale, style)
+, scale_(scale) {}
+
+void SpriteDisplay::Update(float fElapsedTime) {
+	auto mousePos = engine_.GetMousePos();
+	auto bounds = Bounds{{pos_.x, pos_.y}, {pos_.x + size_.x, pos_.y + size_.y}};
+	if (!IsInBounds(mousePos, bounds)) {
+		return;
+	}
+
+	const auto mousePressed = engine_.GetMouse(olc::Mouse::LEFT).bPressed;
+	const auto mouseHeld = engine_.GetMouse(olc::Mouse::LEFT).bHeld;
+	const auto mouseActive = mousePressed || mouseHeld;
+
+	if (mouseActive) {
+		auto coord = mousePos - pos_;
+		coord /= scale_;
+		buttonHandler_(coord);
+	}
+}
+
+void SpriteDisplay::Draw() {
+	if (!visible_) {
+		return;
+	}
+
+	engine_.DrawSprite(pos_, sprite_, scale_);
+}
+
+void SpriteDisplay::SetSprite(olc::Sprite* sprite) {
+	sprite_ = sprite;
+}
+
+void SpriteDisplay::SetButtonHandler(Handler_t handler) {
+	buttonHandler_ = std::move(handler);
+}
+
 } //namespace Editor::UI
