@@ -13,11 +13,14 @@ public:
 	Base(olc::PixelGameEngine& pge, const olc::vf2d& pos,
 		const olc::vf2d& size, const Style& style);
 
+	void SetVisibility(bool visible);
+
 protected:
 	olc::PixelGameEngine& engine_;
 	olc::vf2d pos_;
 	olc::vf2d size_;
 	const Style& style_;
+	bool visible_ = true;
 };
 
 class ColorButton : public Base {

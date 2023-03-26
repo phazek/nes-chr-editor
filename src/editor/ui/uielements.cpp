@@ -16,9 +16,15 @@ bool IsInBounds(const olc::v2d_generic<T>& point, const Bounds& bounds) {
 
 namespace Editor::UI {
 
+// Base
 Base::Base(olc::PixelGameEngine &pge, const olc::vf2d &pos,
 	const olc::vf2d &size, const Style &style)
 : engine_(pge), pos_(pos), size_(size), style_(style) {}
+
+
+void Base::SetVisibility(bool visible) {
+	visible_ = visible;
+}
 
 // ColorButton
 ColorButton::ColorButton(olc::PixelGameEngine& pge, olc::Pixel color,
@@ -117,11 +123,14 @@ void PaletteSelector::Update(float fElapsedTime) {
 }
 
 void PaletteSelector::Draw() {
+	if (!visible_) {
+		return;
+	}
+
 	for (auto& button : buttons_) {
 		button.Draw();
 	}
 }
-
 
 // ButtonStrip
 ButtonStrip::ButtonStrip(
@@ -152,7 +161,11 @@ void ButtonStrip::Update(float fElapsedTime) {
 	}
 }
 
-void Editor::UI::ButtonStrip::Draw() {
+void ButtonStrip::Draw() {
+	if (!visible_) {
+		return;
+	}
+
 	for (int i = 0; i < buttons_.size(); ++i) {
 		auto& button = buttons_[i];
 		auto color = button.pressed ? style_.highlightColor: style_.bgColor;
@@ -165,7 +178,7 @@ void Editor::UI::ButtonStrip::Draw() {
 	}
 }
 
-void Editor::UI::ButtonStrip::SetButtonCount(unsigned int count) {
+void ButtonStrip::SetButtonCount(unsigned int count) {
 	buttons_.clear();
 	auto btnWidth = size_.x / count;
 	for (int i = 0; i < count; ++i) {
