@@ -35,6 +35,27 @@ private:
 	ButtonHandler_t buttonHandler_{};
 };
 
+class PaletteSelector {
+public:
+	using Handler_t = std::function<void(int)>;
+
+	PaletteSelector(olc::PixelGameEngine& pge, const olc::vf2d& pos,
+			const olc::vf2d& size, const Style& style);
+
+	void SetColor(uint8_t idx, olc::Pixel color);
+	void SetButtonHandler(Handler_t handler);
+	void Update(float fElapsedTime);
+	void Draw();
+
+private:
+	olc::PixelGameEngine& engine_;
+	std::vector<ColorButton> buttons_;
+	olc::vf2d pos_;
+	olc::vf2d size_;
+	const Style& style_;
+	Handler_t buttonHandler_{};
+};
+
 class ButtonStrip {
 public:
 	using Handler_t = std::function<void(int)>;
