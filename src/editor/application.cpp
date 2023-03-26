@@ -15,8 +15,7 @@ olc::Pixel IdToColor(uint8_t id) {
 
 namespace Editor {
 
-Application::Application()
-: uiManager_(*this, Style{}) {
+Application::Application() {
 	sAppName = "NES CHR editor";
 
 	BuildUI();
@@ -46,8 +45,6 @@ bool Application::HandleInput() {
 
 void Application::DrawScene() {
 	Clear(style_.bgColor);
-	uiManager_.Update();
-	uiManager_.Draw();
 
 	DrawLine({140, 0}, {140, ScreenHeight()}, style_.borderColor);
 
@@ -57,7 +54,6 @@ void Application::DrawScene() {
 
 void Application::BuildUI() {
 	// Palette
-	uiManager_.AddLabel("Palette", {}, {135, 20});
 	paletteSelector_ = new UI::PaletteSelector{*this, {0, 20}, {140, 30}, style_};
 	for (int i = 0; i < 4; ++i) {
 		paletteSelector_->SetColor(i, IdToColor(editorModel_.GetPaletteColorId(i)));
