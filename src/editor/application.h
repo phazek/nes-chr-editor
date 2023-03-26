@@ -1,7 +1,6 @@
 #pragma once
 
 #include "olc/olcPixelGameEngine.h"
-#include "olc/olcPGEX_QuickGUI.h"
 #include "ui/uielements.h"
 #include "nes/nesfile.h"
 

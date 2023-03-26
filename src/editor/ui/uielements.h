@@ -1,6 +1,5 @@
 #pragma once
 
-#include "olc/olcPGEX_QuickGUI.h"
 #include "../style.h"
 #include <functional>
 
