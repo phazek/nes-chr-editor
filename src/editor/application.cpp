@@ -50,6 +50,7 @@ void Application::DrawScene() {
 
 	bankSelectorUi_->Draw();
 	paletteSelector_->Draw();
+	colorSelector_->Draw();
 }
 
 void Application::BuildUI() {
@@ -58,11 +59,29 @@ void Application::BuildUI() {
 	for (int i = 0; i < 4; ++i) {
 		paletteSelector_->SetColor(i, IdToColor(editorModel_.GetPaletteColorId(i)));
 	}
-	paletteSelector_->SetButtonHandler([this](int idx){
-		tfm::printf("Palette entry selected: %d\n", idx);
-		currentlyEditedPaletteEntry_ = idx;
-		// TODO: open color selector for given entry
+
+	paletteSelector_->SetButtonHandler([this](int idx) {
+		if (currentlyEditedPaletteEntry_ == idx) {
+			currentlyEditedPaletteEntry_ = -1;
+			colorSelector_->SetVisibility(false);
+		} else {
+			currentlyEditedPaletteEntry_ = idx;
+			colorSelector_->SetVisibility(true);
+		}
 	});
+
+	// Color chooser
+	colorSelector_ = new UI::ColorSelector{*this, {0.f, 60.f}, {140.f, 310}, style_};
+	colorSelector_->SetButtonHandler([this](int idx) {
+		editorModel_.SetPaletteColorId(currentlyEditedPaletteEntry_, idx);
+		const auto &color = IdToColor(editorModel_.GetPaletteColorId(
+			currentlyEditedPaletteEntry_));
+		paletteSelector_->SetColor(currentlyEditedPaletteEntry_, color);
+
+		currentlyEditedPaletteEntry_ = -1;
+		colorSelector_->SetVisibility(false);
+	});
+	colorSelector_->SetVisibility(false);
 
 	// CHR bank selector
 	bankSelectorUi_ = new UI::ButtonStrip(*this, {330, 430}, {150, 30}, style_);
@@ -75,6 +94,7 @@ void Application::BuildUI() {
 void Application::UpdateUI(float fElapsedTime) {
 	bankSelectorUi_->Update(fElapsedTime);
 	paletteSelector_->Update(fElapsedTime);
+	colorSelector_->Update(fElapsedTime);
 }
 
 void Application::LoadNesFile(const std::string& path) {
