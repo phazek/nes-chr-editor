@@ -16,15 +16,17 @@ bool IsInBounds(const olc::v2d_generic<T>& point, const Bounds& bounds) {
 
 namespace Editor::UI {
 
+Base::Base(olc::PixelGameEngine &pge, const olc::vf2d &pos,
+	const olc::vf2d &size, const Style &style)
+: engine_(pge), pos_(pos), size_(size), style_(style) {}
+
 // ColorButton
 ColorButton::ColorButton(olc::PixelGameEngine& pge, olc::Pixel color,
 	     const std::string& text, const olc::vf2d& pos,
 	     const olc::vf2d& size, const Style& style)
-: engine_(pge)
+: Base(pge, pos, size, style)
 , color_(color)
-, pos_(pos)
-, size_(size)
-, style_(style) {
+{
 	SetText(text);
 }
 
@@ -82,10 +84,8 @@ void ColorButton::SetButtonHandler(ButtonHandler_t handler) {
 PaletteSelector::PaletteSelector(
 	olc::PixelGameEngine& pge, const olc::vf2d& pos,
 	const olc::vf2d& size, const Style& style)
-: engine_(pge)
-, pos_(pos)
-, size_(size)
-, style_(style) {
+: Base(pge, pos, size, style)
+{
 	auto buttonWidth = size_.x / 4;
 	const olc::vf2d buttonSize = olc::vf2d{buttonWidth, size_.y};
 
@@ -129,11 +129,9 @@ ButtonStrip::ButtonStrip(
 	const olc::vf2d& pos,
 	const olc::vf2d& size,
 	const Style& style)
-: engine_(pge)
-, pos_(pos)
-, size_(size)
-, style_(style) {
-	SetButtonCount(3);
+: Base(pge, pos, size, style)
+{
+	SetButtonCount(1);
 }
 
 void ButtonStrip::Update(float fElapsedTime) {

@@ -7,8 +7,20 @@ namespace Editor::UI {
 
 using ButtonHandler_t = std::function<void()>;
 
-class ColorButton
-{
+
+class Base {
+public:
+	Base(olc::PixelGameEngine& pge, const olc::vf2d& pos,
+		const olc::vf2d& size, const Style& style);
+
+protected:
+	olc::PixelGameEngine& engine_;
+	olc::vf2d pos_;
+	olc::vf2d size_;
+	const Style& style_;
+};
+
+class ColorButton : public Base {
 public:
 	ColorButton(olc::PixelGameEngine& pge, olc::Pixel color,
 		const std::string& text, const olc::vf2d& pos,
@@ -22,19 +34,15 @@ public:
 	void Update(float fElapsedTime);
 	void Draw();
 private:
-	olc::PixelGameEngine& engine_;
 	olc::Pixel color_{};
 	std::string text_{};
 	olc::vf2d textSize_{};
-	olc::vf2d pos_;
-	olc::vf2d size_;
-	const Style& style_;
 	bool selected_ = false;
 	bool pressed_ = false;
 	ButtonHandler_t buttonHandler_{};
 };
 
-class PaletteSelector {
+class PaletteSelector : public Base {
 public:
 	using Handler_t = std::function<void(int)>;
 
@@ -47,15 +55,11 @@ public:
 	void Draw();
 
 private:
-	olc::PixelGameEngine& engine_;
 	std::vector<ColorButton> buttons_;
-	olc::vf2d pos_;
-	olc::vf2d size_;
-	const Style& style_;
 	Handler_t buttonHandler_{};
 };
 
-class ButtonStrip {
+class ButtonStrip : public Base {
 public:
 	using Handler_t = std::function<void(int)>;
 
@@ -75,10 +79,6 @@ private:
 		bool pressed = false;
 	};
 
-	olc::PixelGameEngine& engine_;
-	olc::vf2d pos_;
-	olc::vf2d size_;
-	const Style& style_;
 	Handler_t buttonHandler_;
 	std::vector<Button> buttons_;
 };
