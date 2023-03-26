@@ -89,7 +89,7 @@ void Application::BuildUI() {
 	colorSelector_->SetVisibility(false);
 
 	// CHR bank selector
-	bankSelectorUi_ = new UI::ButtonStrip(*this, {330, 430}, {150, 30}, style_);
+	bankSelectorUi_ = new UI::ButtonStrip(*this, {275, 430}, {150, 30}, style_);
 	bankSelectorUi_->SetButtonHandler([this](int idx){
 		tfm::printf("CHR bank selected: %d\n", idx);
 		editorModel_.SetChrData(nesFile_->GetChrBank(idx));
