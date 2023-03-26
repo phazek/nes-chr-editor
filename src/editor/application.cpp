@@ -103,14 +103,12 @@ void Application::BuildUI() {
 	// CHR bank selector
 	bankSelectorUi_ = new UI::ButtonStrip(*this, {275, 430}, {150, 30}, style_);
 	bankSelectorUi_->SetButtonHandler([this](int idx){
-		tfm::printf("CHR bank selected: %d\n", idx);
 		editorModel_.SetChrData(nesFile_->GetChrBank(idx));
 	});
 
 	// CHR bank display
 	bankDisplay_ = new UI::BankDisplay{editorModel_, *this, {150.f, 10.f}, {400, 400}, style_};
 	bankDisplay_->SetButtonHandler([this](int idx){
-		tfm::printf("Tile %d selected\n", idx);
 		selectedSpriteIndex_ = idx;
 		spriteDisplay_->SetSprite(editorModel_.GetSprites()[selectedSpriteIndex_]);
 		spriteDisplay_->SetVisibility(true);
@@ -136,7 +134,7 @@ void Application::UpdateUI(float fElapsedTime) {
 
 void Application::LoadNesFile(const std::string& path) {
 	nesFile_ = nes::File::LoadFromFile(path);
-	bankSelectorUi_->SetButtonCount(nesFile_->GetChrBankCount());
+	bankSelectorUi_->SetButtonCount(nesFile_->GetTileMapCount());
 	editorModel_.SetChrData(nesFile_->GetChrBank(0));
 }
 

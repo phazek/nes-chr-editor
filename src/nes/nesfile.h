@@ -11,7 +11,7 @@ public:
 	static std::unique_ptr<File> LoadFromFile(const std::string& filePath);
 	bool WriteToFile(const std::string& filePath);
 
-	uint8_t GetChrBankCount() const;
+	uint8_t GetTileMapCount() const;
 	[[nodiscard]] std::span<uint8_t> GetChrBank(uint8_t index);
 private:
 	std::vector<uint8_t> buffer_;

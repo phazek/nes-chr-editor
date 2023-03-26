@@ -54,17 +54,17 @@ bool File::WriteToFile(const std::string& filePath){
 	return true;
 }
 
-uint8_t File::GetChrBankCount() const {
-	return chrRomSize_ / kChrBankSize;
+uint8_t File::GetTileMapCount() const {
+	return chrRomSize_ / kTileMapSize;
 }
 
 std::span<uint8_t> File::GetChrBank(uint8_t index) {
-	auto startAddress = chrRomStart_ + index * kChrBankSize;
+	auto startAddress = chrRomStart_ + index * kTileMapSize;
 	if (startAddress <= buffer_.size()) {
-		return {buffer_.data() + startAddress, kChrBankSize};
+		return {buffer_.data() + startAddress, kTileMapSize};
 	}
 
-	tfm::printf("ERROR: chr bank index out of bounds (%d/%d)\n", index, GetChrBankCount());
+	tfm::printf("ERROR: chr bank index out of bounds (%d/%d)\n", index, GetTileMapCount());
 	return {};
 }
 
@@ -79,7 +79,7 @@ bool File::Init() {
 	const auto prgRomStart = kHeaderSize;
 	chrRomSize_ = buffer_[5] * kChrBankSize;
 	chrRomStart_ = prgRomStart + prgRomSize;
-	tfm::printf("NesFile initialized from buffer (size %d), bank count %d\n", buffer_.size(), GetChrBankCount());
+	tfm::printf("NesFile initialized from buffer (size %d), bank count %d\n", buffer_.size(), GetTileMapCount());
 
 	return true;
 }

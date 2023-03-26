@@ -45,9 +45,9 @@ Model::Model() {
 }
 
 bool Model::SetChrData(std::span<uint8_t> data) {
-	if (data.size() != nes::kChrBankSize) {
+	if (data.size() != nes::kTileMapSize) {
 		tfm::printf("ERROR: invalid chr bank size: %s (correct %s)\n",
-			data.size(), nes::kChrBankSize);
+			data.size(), nes::kTileMapSize);
 		return false;
 	}
 
