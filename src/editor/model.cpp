@@ -46,11 +46,17 @@ void Model::SetPaletteColorId(uint8_t index, uint8_t id) {
 	assert(0 <= index && index < palette_.size());
 
 	palette_[index] = id;
-	UpdateSprites();
+	UpdateAllSprites();
 }
 
 const std::vector<olc::Sprite*>& Model::GetSprites() const {
 	return sprites_;
+}
+
+void Model::SetTilePixel(int tileIdx, olc::vi2d coord, uint8_t colorId) {
+	auto& tile = tiles_[tileIdx];
+	tile.data[coord.y * 8 + coord.x] = colorId;
+	UpdateSprite(tileIdx);
 }
 
 void Model::ParseTiles() {
@@ -60,10 +66,26 @@ void Model::ParseTiles() {
 		tiles_[i].ParseData(input);
 	}
 
-	UpdateSprites();
+	UpdateAllSprites();
 }
 
-void Model::UpdateSprites() {
+void Model::UpdateSprite(int idx) {
+	std::array<olc::Pixel, 4> colors = {
+		nes::kColorPalette[palette_[0]],
+		nes::kColorPalette[palette_[1]],
+		nes::kColorPalette[palette_[2]],
+		nes::kColorPalette[palette_[3]],
+	};
+	auto* sprite = sprites_[idx];
+	for (int y = 0; y < 8; ++y) {
+		for (int x = 0; x < 8; ++x) {
+			auto colorId = tiles_[idx].data[y * 8 + x];
+			sprite->SetPixel(x, y, colors[colorId]);
+		}
+	}
+}
+
+void Model::UpdateAllSprites() {
 	std::array<olc::Pixel, 4> colors = {
 		nes::kColorPalette[palette_[0]],
 		nes::kColorPalette[palette_[1]],

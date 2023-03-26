@@ -16,6 +16,7 @@ public:
 	void SetPaletteColorId(uint8_t index, uint8_t id);
 
 	const std::vector<olc::Sprite*>& GetSprites() const;
+	void SetTilePixel(int tileIdx, olc::vi2d coord, uint8_t colorId);
 private:
 	struct Tile {
 		void ParseData(const std::span<uint8_t>& src);
@@ -29,7 +30,8 @@ private:
 	std::vector<Tile> tiles_;
 
 	void ParseTiles();
-	void UpdateSprites();
+	void UpdateSprite(int idx);
+	void UpdateAllSprites();
 };
 
 } // namespace Editor
