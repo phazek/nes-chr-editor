@@ -139,6 +139,7 @@ private:
 	Model& model_;
 	Handler_t buttonHandler_;
 	std::vector<std::unique_ptr<SpriteButton>> buttons_;
+	const int kScale = 3;
 
 	void InitializeButtons();
 };

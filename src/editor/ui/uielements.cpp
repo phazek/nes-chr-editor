@@ -329,7 +329,7 @@ void BankDisplay::Draw() {
 		return;
 	}
 	for (auto& button : buttons_) {
-		button->Draw(2);
+		button->Draw(kScale);
 	}
 }
 
@@ -339,8 +339,9 @@ void BankDisplay::SetButtonHandler(Handler_t handler) {
 
 void BankDisplay::InitializeButtons() {
 	const int kButtonPerRow = 16;
-	olc::vf2d gridSize = {18.f, 18.f};
-	olc::vf2d buttonSize = gridSize - olc::vf2d{2.f, 2.f};
+	const olc::vf2d kPadding{2.f, 2.f};
+	olc::vf2d gridSize = olc::vf2d{kScale * 8.f, kScale * 8.f} + kPadding;
+	olc::vf2d buttonSize = gridSize - kPadding;
 	auto& sprites = model_.GetSprites();
 
 	for (int i = 0; i < sprites.size(); ++i) {
