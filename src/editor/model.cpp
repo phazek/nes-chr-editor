@@ -5,6 +5,10 @@
 
 #include "tfm/tinyformat.h"
 
+namespace {
+constexpr int kRawTileSize = 16;
+} // namespace
+
 namespace Editor {
 
 void Model::Tile::ParseData(const std::span<uint8_t>& src) {
@@ -76,8 +80,22 @@ void Model::SetTilePixel(int tileIdx, olc::vi2d coord, uint8_t colorId) {
 	UpdateSprite(tileIdx);
 }
 
+void Model::Save() {
+	for (int i = 0; i < tiles_.size(); ++i) {
+		auto& tile = tiles_[i];
+		if (!tile.dirty) {
+			continue;
+		}
+
+		auto raw = tile.ToRawData();
+		int startAddress = i * kRawTileSize;
+		for (int j = 0; j < raw.size(); ++j) {
+			data_[startAddress + j] = raw[j];
+		}
+	}
+}
+
 void Model::ParseTiles() {
-	static const int kRawTileSize = 16;
 	for (int i = 0; i < 256; ++i) {
 		std::span<uint8_t> input{data_.data() + i * kRawTileSize, kRawTileSize};
 		tiles_[i].ParseData(input);

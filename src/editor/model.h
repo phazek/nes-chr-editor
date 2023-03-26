@@ -17,6 +17,8 @@ public:
 
 	const std::vector<olc::Sprite*>& GetSprites() const;
 	void SetTilePixel(int tileIdx, olc::vi2d coord, uint8_t colorId);
+	void Save();
+
 private:
 	struct Tile {
 		void ParseData(const std::span<uint8_t>& src);
