@@ -73,6 +73,7 @@ public:
 
 	void SetColor(uint8_t idx, olc::Pixel color);
 	void SetSelected(uint8_t idx);
+	uint8_t GetSelected() const;
 	void SetButtonHandler(Handler_t handler);
 	void Update(float fElapsedTime);
 	void Draw();
@@ -80,6 +81,7 @@ public:
 private:
 	std::vector<ColorButton> buttons_;
 	Handler_t buttonHandler_{};
+	int selectedButtonIdx_ = -1;
 };
 
 class ButtonStrip : public Base {

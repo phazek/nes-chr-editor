@@ -164,10 +164,16 @@ void PaletteSelector::SetColor(uint8_t idx, olc::Pixel color) {
 }
 
 void PaletteSelector::SetSelected(uint8_t idx) {
-	for (auto& button : buttons_) {
-		button.SetSelected(false);
+	if (selectedButtonIdx_ != -1) {
+		buttons_[selectedButtonIdx_].SetSelected(false);
 	}
-	buttons_[idx].SetSelected(true);
+
+	selectedButtonIdx_ = idx;
+	buttons_[selectedButtonIdx_].SetSelected(true);
+}
+
+uint8_t PaletteSelector::GetSelected() const {
+	return selectedButtonIdx_;
 }
 
 void PaletteSelector::SetButtonHandler(Handler_t handler) {
