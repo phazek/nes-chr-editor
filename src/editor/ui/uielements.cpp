@@ -63,7 +63,15 @@ void ColorButton::Draw() {
 	}
 
 	if (selected_) {
-		engine_.DrawRect(pos_, size_, style_.borderColor);
+		auto pos = pos_;
+		auto size = size_;
+		engine_.DrawRect(pos, size, style_.borderColor);
+		pos += olc::vf2d{1.f, 1.f};
+		size -= olc::vf2d{2.f, 2.f};
+		engine_.DrawRect(pos, size, style_.bgColor);
+		pos += olc::vf2d{1.f, 1.f};
+		size -= olc::vf2d{2.f, 2.f};
+		engine_.DrawRect(pos, size, style_.borderColor);
 	}
 
 	olc::vf2d textPos{pos_.x + (size_.x - textSize_.x) / 2,
