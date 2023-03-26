@@ -126,10 +126,12 @@ void SpriteButton::Update(float fElapsedTime) {
 }
 
 void SpriteButton::Draw(int scale) {
-	engine_.DrawSprite(pos_, sprite_, scale);
 	if (selected_) {
-		engine_.DrawRect(pos_, size_ * scale, style_.borderColor);
+		engine_.FillRect(pos_ - olc::vf2d{2.f, 2.f},
+						 sprite_->Size() * scale + olc::vf2d{4.f, 4.f},
+						 style_.borderColor);
 	}
+	engine_.DrawSprite(pos_, sprite_, scale);
 }
 
 void SpriteButton::SetSelected(bool selected) {
@@ -210,16 +212,16 @@ void ButtonStrip::Update(float fElapsedTime) {
 	auto mousePressed = engine_.GetMouse(olc::Mouse::LEFT).bPressed;
 	auto mouseReleased = engine_.GetMouse(olc::Mouse::LEFT).bReleased;
 	for (int i = 0; i < buttons_.size(); ++i) {
-	    auto& button = buttons_[i];
+		auto& button = buttons_[i];
 		auto bounds = Bounds{{button.pos.x, button.pos.y}, {button.pos.x + button.size.x, button.pos.y + button.size.y}};
-	    if (IsInBounds(mousePos, bounds)) {
+		if (IsInBounds(mousePos, bounds)) {
 			if (button.pressed && mouseReleased) {
 				button.pressed = false;
 				buttonHandler_(i);
 			} else if (mousePressed) {
 				button.pressed = true;
 			}
-	    }
+		}
 	}
 }
 
@@ -354,9 +356,19 @@ void BankDisplay::InitializeButtons() {
 			style_);
 		button->SetButtonHandler([i, this](){
 			buttonHandler_(i);
+			SetSelected(i);
 		});
 		buttons_.push_back(std::move(button));
 	}
+}
+
+void BankDisplay::SetSelected(int idx) {
+	if (selectedButtonIdx_ != -1) {
+		buttons_[selectedButtonIdx_]->SetSelected(false);
+	}
+
+	selectedButtonIdx_ = idx;
+	buttons_[selectedButtonIdx_]->SetSelected(true);
 }
 
 } //namespace Editor::UI

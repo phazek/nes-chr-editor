@@ -139,9 +139,11 @@ private:
 	Model& model_;
 	Handler_t buttonHandler_;
 	std::vector<std::unique_ptr<SpriteButton>> buttons_;
+	int selectedButtonIdx_ = -1;
 	const int kScale = 3;
 
 	void InitializeButtons();
+	void SetSelected(int idx);
 };
 
 } //namespace Editor::UI
