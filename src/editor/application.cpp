@@ -3,6 +3,8 @@
 #include "tfm/tinyformat.h"
 #include "ui/uielements.h"
 
+#include <filesystem>
+
 namespace {
 const olc::vf2d kBankSelectorPos{275.f, 420.f};
 const olc::vf2d kPaletteSelectorPos{0.f, 5.f};
@@ -12,7 +14,7 @@ const olc::vf2d kSpriteDisplayPos{580.f, 5.f};
 
 const olc::vf2d kPaletteButtonSize{30.f, 30.f};
 
-const std::string kHelpText = "ESC = Quit | 1-4 = Select brush color | Backspace = Undo";
+const std::string kHelpText = "ESC = Quit | Shift + S = Save | 1-4 = Select brush color | Backspace = Undo";
 
 olc::Pixel IdToColor(uint8_t id) {
 	assert(id < nes::kColorPalette.size());
@@ -57,10 +59,12 @@ bool Application::HandleInput() {
 	if (GetKey(olc::Key::K4).bReleased) paletteSelector_->SetSelected(3);
 
 	if (GetKey(olc::Key::BACK).bReleased) editorModel_.Undo();
-	if (GetKey(olc::Key::S).bReleased) {
+	if (GetKey(olc::Key::SHIFT).bHeld && GetKey(olc::Key::S).bPressed) {
 		editorModel_.Save();
-		nesFile_->WriteToFile("copy.nes");
-		tfm::printf("Saved successfully\n");
+		auto path = std::filesystem::current_path();
+		path.append("edited.nes");
+		nesFile_->WriteToFile(path);
+		tfm::printf("Saved successfully to %s\n", path);
 	}
 
 	return true;
