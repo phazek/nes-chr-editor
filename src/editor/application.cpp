@@ -12,6 +12,8 @@ const olc::vf2d kSpriteDisplayPos{580.f, 5.f};
 
 const olc::vf2d kPaletteButtonSize{30.f, 30.f};
 
+const std::string kHelpText = "ESC = Quit | 1-4 = Select brush color | Backspace = Undo";
+
 olc::Pixel IdToColor(uint8_t id) {
 	assert(id < nes::kColorPalette.size());
 	return nes::kColorPalette[id];
@@ -67,7 +69,12 @@ bool Application::HandleInput() {
 void Application::DrawScene() {
 	Clear(style_.bgColor);
 
-	DrawLine({140, 0}, {140, ScreenHeight()}, style_.borderColor);
+	// Divider lines
+	DrawLine({140, 0}, {140, ScreenHeight() - 20}, style_.borderColor);
+	DrawLine({0, ScreenHeight() - 20}, {ScreenWidth(), ScreenHeight() - 20}, style_.borderColor);
+
+	// Hotkey list
+	DrawString({5, ScreenHeight() - 15}, kHelpText, style_.textColor);
 
 	bankSelectorUi_->Draw();
 	paletteSelector_->Draw();
