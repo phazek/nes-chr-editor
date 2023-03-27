@@ -30,7 +30,6 @@ private:
 	UI::BankDisplay* bankDisplay_;
 	UI::SpriteDisplay* spriteDisplay_;
 
-
 	bool HandleInput();
 	void DrawScene();
 

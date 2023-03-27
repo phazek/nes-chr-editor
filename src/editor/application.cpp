@@ -4,7 +4,13 @@
 #include "ui/uielements.h"
 
 namespace {
-const olc::vf2d kPaletteButtonSize = {30.f, 30.f};
+const olc::vf2d kBankSelectorPos{275.f, 420.f};
+const olc::vf2d kPaletteSelectorPos{0.f, 5.f};
+const olc::vf2d kColorSelectorPos{0.f, 40.f};
+const olc::vf2d kBankDisplayPos{150.f, 5.f};
+const olc::vf2d kSpriteDisplayPos{580.f, 5.f};
+
+const olc::vf2d kPaletteButtonSize{30.f, 30.f};
 
 olc::Pixel IdToColor(uint8_t id) {
 	assert(id < nes::kColorPalette.size());
@@ -72,7 +78,7 @@ void Application::DrawScene() {
 
 void Application::BuildUI() {
 	// Palette
-	paletteSelector_ = new UI::PaletteSelector{*this, {0, 20}, {140, 30}, style_};
+	paletteSelector_ = new UI::PaletteSelector{*this, kPaletteSelectorPos, {140, 30}, style_};
 	for (int i = 0; i < 4; ++i) {
 		paletteSelector_->SetColor(i, IdToColor(editorModel_.GetPaletteColorId(i)));
 	}
@@ -88,7 +94,7 @@ void Application::BuildUI() {
 	});
 
 	// Color chooser
-	colorSelector_ = new UI::ColorSelector{*this, {0.f, 60.f}, {140.f, 310}, style_};
+	colorSelector_ = new UI::ColorSelector{*this, kColorSelectorPos, {140.f, 310}, style_};
 	colorSelector_->SetButtonHandler([this](int idx) {
 		editorModel_.SetPaletteColorId(currentlyEditedPaletteEntry_, idx);
 		const auto &color = IdToColor(editorModel_.GetPaletteColorId(
@@ -101,13 +107,13 @@ void Application::BuildUI() {
 	colorSelector_->SetVisibility(false);
 
 	// CHR bank selector
-	bankSelectorUi_ = new UI::ButtonStrip(*this, {275, 430}, {150, 30}, style_);
+	bankSelectorUi_ = new UI::ButtonStrip(*this, kBankSelectorPos, {150, 30}, style_);
 	bankSelectorUi_->SetButtonHandler([this](int idx){
 		editorModel_.SetChrData(nesFile_->GetChrBank(idx));
 	});
 
 	// CHR bank display
-	bankDisplay_ = new UI::BankDisplay{editorModel_, *this, {150.f, 10.f}, {400, 400}, style_};
+	bankDisplay_ = new UI::BankDisplay{editorModel_, *this, kBankDisplayPos, {400, 400}, style_};
 	bankDisplay_->SetButtonHandler([this](int idx){
 		selectedSpriteIndex_ = idx;
 		spriteDisplay_->SetSprite(editorModel_.GetSprites()[selectedSpriteIndex_]);
@@ -115,7 +121,7 @@ void Application::BuildUI() {
 	});
 
 	// Editor panel
-	spriteDisplay_ = new UI::SpriteDisplay{*this, {580, 10.f}, 32, style_};
+	spriteDisplay_ = new UI::SpriteDisplay{*this, kSpriteDisplayPos, 32, style_};
 	spriteDisplay_->SetVisibility(false);
 	spriteDisplay_->SetButtonHandler([this](olc::vi2d coord) {
 		auto selectedColor = paletteSelector_->GetSelected();
